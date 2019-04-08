@@ -22,9 +22,6 @@ Create `subscriber` with  topic `#` to listen and store all messages.
 
 ## GraphQL Server on http node
 
->We are focusing on queries (fetching data) in this example so that we can analyze messages and react on them. (We are not mutating any data)
-
-
 
 Additional dependencies (`express` is pre-installed with `Node-RED`)
 
@@ -36,6 +33,8 @@ We are updating `http in` node directly instead of creating a custom node.
 <p align="center">
 <img src="https://github.com/phyunsj/mqtt-endpoint-graphql/blob/master/images/graphql-node.png" width="500px"/>
 </p>
+
+Source :[21-httpin.html](https://github.com/phyunsj/mqtt-endpoint-graphql/blob/master/core/io/21-httpin.html)
 
 ```
    <div class="form-row">
@@ -52,9 +51,14 @@ We are updating `http in` node directly instead of creating a custom node.
         </select>
    </div>
 ```
+
 #### Schema
 
 GraphQL Schema is comprised of types as well as operations (query, mutation and subscription). 
+
+>We are focusing on queries (fetching data) in this example so that we can analyze messages and react on them. (We are not mutating any data)
+
+Source :[21-httpin.js](https://github.com/phyunsj/mqtt-endpoint-graphql/blob/master/core/io/21-httpin.js)
 
 ```
     var express_graphql = require('express-graphql'); 
