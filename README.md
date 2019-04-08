@@ -14,7 +14,7 @@ As usual, my first choice of PoC development environment is `Node-RED`.
 7 Apr 13:40:53 - [info] Darwin 18.2.0 x64 LE
 ```
 
-Create `subscriber` with  topic `#` to listen and store all messages. 
+Create `subscriber` with  topic `#` to listen and store all messages.
 
 <p align="center">
 <img src="https://github.com/phyunsj/mqtt-endpoint-graphql/blob/master/images/mqtt-endpoint-graphql.png" width="700px"/>
@@ -22,17 +22,13 @@ Create `subscriber` with  topic `#` to listen and store all messages.
 
 ## GraphQL Server on http node
 
-
-Additional dependencies (`express` is pre-installed with `Node-RED`)
-
-```
-$ npm install graphql express-graphql deasync
-```
 We are updating `http in` node directly instead of creating a custom node. 
 
-<p align="center">
-<img src="https://github.com/phyunsj/mqtt-endpoint-graphql/blob/master/images/graphql-node.png" width="500px"/>
-</p>
+The following packages are required. Install under `node-red` folder. (`express` is pre-installed with `Node-RED`)
+
+```
+$ npm install graphql express-graphql deasync nedb
+```
 
 Source :[21-httpin.html](https://github.com/phyunsj/mqtt-endpoint-graphql/blob/master/core/io/21-httpin.html)
 
@@ -52,9 +48,13 @@ Source :[21-httpin.html](https://github.com/phyunsj/mqtt-endpoint-graphql/blob/m
    </div>
 ```
 
+<p align="center">
+<img src="https://github.com/phyunsj/mqtt-endpoint-graphql/blob/master/images/graphql-node.png" width="500px"/>
+</p>
+
 #### Schema
 
-GraphQL Schema is comprised of types as well as operations (query, mutation and subscription). 
+GraphQL Schema is made up of types as well as operations (query, mutation and subscription). 
 
 >We are focusing on queries (fetching data) in this example so that we can analyze messages and react on them. (We are not mutating any data)
 
@@ -111,6 +111,10 @@ Resolvers are the implementation of schema (query) API.
 ```
     var root = {
         ...
+        ,
+        overHeated: (args, context) => { 
+           ...
+        }
         ,
         eventQuery: (args, context) => { 
               // Query Example  
@@ -198,18 +202,20 @@ Resolvers are the implementation of schema (query) API.
   
         }    
         ,
-        ... 
-        
+        temperatureAvg: (args, context ) => {
+           ... 
+        }
     };
 ```
+Mount express-graphql as a route handler for `/graphql`
 
 ```
     if (this.method == "graphql") {
                 RED.httpNode.use( '/graphql', express_graphql({
-                    schema: schema,
-                    rootValue: root,
+                    schema: schema,  // schema object out of GraphQL schema language
+                    rootValue: root, // resolver
                     graphiql: true,
-                    context: { db }
+                    context: { db }  
                 }));
     }
 ```
@@ -222,6 +228,7 @@ Resolvers are the implementation of schema (query) API.
 
 ### Related Posts
 
+- [express-graphql](https://github.com/graphql/express-graphql)
 - [GraphQL Server Basics](https://www.prisma.io/blog/graphql-server-basics-the-schema-ac5e2950214e)
 - [Building a GraphQL Server with Node.js and Express](https://itnext.io/building-a-graphql-server-with-node-js-and-express-f8ea78e831f9)
 - [Creating A GraphQL Server With Node.js And Express](https://medium.com/codingthesmartway-com-blog/creating-a-graphql-server-with-node-js-and-express-f6dddc5320e1)
